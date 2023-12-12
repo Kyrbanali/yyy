@@ -9,19 +9,20 @@ services:
     depends_on:
       - db
     volumes:
-      - './src:/var/www/html'
+      - ./app/public:/var/www/html
 
   nginx:
     image: nginx:latest
+    restart: always
     hostname: nginx
     container_name: nginx
     depends_on:
       - php-fpm
     ports:
-      - 80:80
+      - 81:80
     volumes:
-      - './src:/var/www/html'
-      - './docker/nginx/conf.d:/etc/nginx/conf.d'
+      - ./app/public:/var/www/html
+      - ./docker/nginx/conf.d:/etc/nginx/conf.d
 
   db:
     image: postgres:latest
@@ -29,8 +30,9 @@ services:
     hostname: postgresDB
     container_name: postgresDB
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=${DB_DATABASE}
+      - POSTGRES_USER=${DB_USERNAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
     ports:
-      - "5433:5432"
+      - 5433:5432
 
